@@ -10,9 +10,13 @@ if [ "$(id -u)" = "0" ] && [ -z "${RUN_AS_NODE:-}" ]; then
         exit 1
     fi
 
-    SCRIPT_PATH="${BASH_SOURCE[0]}"
+    SCRIPT_PATH="$0"
     mkdir -p /data
-    chown -R --no-dereference node:node /data
+    if chown --help 2>&1 | grep -q -- '--no-dereference'; then
+        chown -R --no-dereference node:node /data
+    else
+        chown -R node:node /data
+    fi
     exec gosu node env RUN_AS_NODE=1 "${SCRIPT_PATH}" "$@"
 fi
 
