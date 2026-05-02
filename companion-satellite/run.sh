@@ -3,6 +3,7 @@ set -euo pipefail
 
 CONFIG_PATH=/data/satellite-config.json
 OPTIONS_PATH=/data/options.json
+APP_ENTRY=/app/satellite/dist/main.js
 
 if [ "$(id -u)" = "0" ]; then
     if ! command -v gosu >/dev/null 2>&1; then
@@ -12,7 +13,7 @@ if [ "$(id -u)" = "0" ]; then
 
     mkdir -p /data
     # Avoid following symlinks inside /data during ownership fix.
-    chown -R --no-dereference node:node /data
+    find /data -xdev -exec chown -h node:node {} +
 fi
 
 # Read options written by Home Assistant Supervisor into /data/options.json
@@ -45,7 +46,7 @@ echo "${UPDATED}" > "${CONFIG_PATH}"
 
 if [ "$(id -u)" = "0" ]; then
     chown node:node "${CONFIG_PATH}"
-    exec gosu node node /app/satellite/dist/main.js "${CONFIG_PATH}"
+    exec gosu node node "${APP_ENTRY}" "${CONFIG_PATH}"
 fi
 
-exec node /app/satellite/dist/main.js "${CONFIG_PATH}"
+exec node "${APP_ENTRY}" "${CONFIG_PATH}"
