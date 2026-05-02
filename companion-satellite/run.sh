@@ -18,14 +18,16 @@ fi
 
 # Apply option values into the JSON config unconditionally so that
 # changes to the add-on options always take effect.
+# All values are passed as strings and converted to the correct type inside jq
+# to avoid failures if the shell variables ever contain unexpected characters.
 UPDATED="$(jq \
-    --argjson rest_port "${REST_PORT}" \
+    --arg rest_port "${REST_PORT}" \
     --arg companion_host "${COMPANION_HOST}" \
-    --argjson companion_port "${COMPANION_PORT}" \
-    '.restPort = $rest_port |
-     .restEnabled = ($rest_port > 0) |
+    --arg companion_port "${COMPANION_PORT}" \
+    '.restPort = ($rest_port | tonumber) |
+     .restEnabled = (($rest_port | tonumber) > 0) |
      .remoteIp = $companion_host |
-     .remotePort = $companion_port' \
+     .remotePort = ($companion_port | tonumber)' \
     "${CONFIG_PATH}")"
 
 echo "${UPDATED}" > "${CONFIG_PATH}"

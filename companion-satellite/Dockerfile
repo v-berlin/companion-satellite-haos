@@ -21,8 +21,10 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
         g++ \
     && rm -rf /var/lib/apt/lists/*
 
-# Pin to the latest stable upstream release tag; bump this when upgrading.
-ARG SATELLITE_REF=main
+# Pin to a specific upstream release tag for reproducible builds.
+# Check https://github.com/bitfocus/companion-satellite/releases for the latest tag.
+# Override at build time with: --build-arg SATELLITE_REF=v3.0.1
+ARG SATELLITE_REF=v3.0.1
 RUN git clone --depth 1 --branch "${SATELLITE_REF}" \
         https://github.com/bitfocus/companion-satellite.git /app
 
@@ -55,9 +57,9 @@ RUN cd node_modules/node-hid \
 RUN sed -i "s/'use_udev%': 1/'use_udev%': 0/" node_modules/node-hid/libusb.gypi
 RUN mkdir -p node_modules/node-hid/libusb_config \
     && touch node_modules/node-hid/libusb_config/config.h
-# The sed below targets line 36 in binding.gyp – same approach as upstream.
-# If upstream ever changes that file this line number may need updating.
-RUN sed -i "36s/.*/'dependencies': [ 'libusb.gypi\\:libusb', ]/g" \
+# Replace the 'dependencies' line in node-hid/binding.gyp using a pattern match
+# rather than a hard-coded line number to stay resilient to upstream changes.
+RUN sed -i "/'dependencies':/s/.*/'dependencies': [ 'libusb.gypi\\:libusb', ],/" \
         node_modules/node-hid/binding.gyp \
     && cd node_modules/node-hid && rm -rf build && yarn gypconfigure && yarn gypbuild
 
