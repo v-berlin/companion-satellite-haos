@@ -1,0 +1,1 @@
+FROM ghcr.io/bitfocus/companion/companion:latest
