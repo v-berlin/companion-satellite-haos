@@ -52,6 +52,8 @@ echo "${UPDATED}" > "${CONFIG_PATH}"
 if ${IS_ROOT}; then
     chown node:node "${CONFIG_PATH}"
     exec gosu node node "${APP_ENTRY}" "${CONFIG_PATH}"
+    echo "Failed to drop privileges; aborting." >&2
+    exit 1
 fi
 
 exec node "${APP_ENTRY}" "${CONFIG_PATH}"
