@@ -2,6 +2,7 @@ name: "Companion | Powering the Streamdecks of the BEGA"
 description: "Bihhhhhtfocus Companion"
 version: "20.1.6"
 slug: "companion"
+
 startup: services
 boot: auto
 
@@ -9,10 +10,6 @@ arch:
   - amd64
   - aarch64
 
-ports:
-  8000/tcp: 8889
-
-webui: "http://[HOST]:[PORT:8000]"
-
-ingress: false
 host_network: true
+
+webui: "http://[HOST]:8000"
