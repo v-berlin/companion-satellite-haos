@@ -9,6 +9,10 @@ on:
     branches: [main]
   workflow_dispatch:
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_BASE: ghcr.io/v-berlin/companion-satellite-haos
+
 jobs:
   build:
     name: Build ${{ matrix.arch }}
@@ -52,7 +56,7 @@ jobs:
       - name: Determine image tags
         id: meta
         run: |
-          IMAGE="ghcr.io/${{ github.repository_owner }}/companion-satellite-haos/${{ matrix.arch }}-addon-companion-satellite"
+          IMAGE="${{ env.IMAGE_BASE }}/${{ matrix.arch }}-addon-companion-satellite"
           VERSION="${{ steps.addon_version.outputs.version }}"
           if [[ "${{ github.event_name }}" == "pull_request" ]]; then
             echo "tags=${IMAGE}:pr-${{ github.event.number }}" >> "$GITHUB_OUTPUT"
@@ -74,7 +78,7 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           build-args: |
             BUILD_ARCH=${{ matrix.arch }}
-            BUILD_DATE=${{ github.event.head_commit.timestamp }}
+            BUILD_DATE=${{ github.event.head_commit.timestamp || github.event.repository.updated_at }}
             BUILD_DESCRIPTION=Satellite Streamdeck connector for Bitfocus Companion
             BUILD_NAME=Companion Satellite
             BUILD_REF=${{ github.sha }}
