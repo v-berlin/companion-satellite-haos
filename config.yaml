@@ -1,15 +1,12 @@
-name: "Companion | Powering the Streamdecks of the BEGA"
-description: "Bihhhhhtfocus Companion"
+name: "Companion Regie Streamdeck"
+description: "Einmal Big Doener Sauce scharf"
 version: "20.1.6"
-slug: "companion"
-
+slug: "companion_regie"
+init: false
 startup: services
 boot: auto
-
 arch:
   - amd64
   - aarch64
-
 host_network: true
-
-webui: "http://[HOST]:8000"
+webui: "http://[HOST]:[PORT:8000]"
