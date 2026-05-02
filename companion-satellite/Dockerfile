@@ -71,6 +71,7 @@ FROM node:24-bookworm-slim
 # jq is used by run.sh to parse /data/options.json
 # libusb-1.0-0 and libudev1 are the runtime (not dev) USB libraries
 RUN apt-get update && apt-get install -y --no-install-recommends \
+        gosu \
         jq \
         libusb-1.0-0 \
         libudev1 \

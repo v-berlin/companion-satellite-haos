@@ -4,6 +4,12 @@ set -euo pipefail
 CONFIG_PATH=/data/satellite-config.json
 OPTIONS_PATH=/data/options.json
 
+if [ "$(id -u)" = "0" ]; then
+    mkdir -p /data
+    chown -R node:node /data
+    exec gosu node "$0" "$@"
+fi
+
 # Read options written by Home Assistant Supervisor into /data/options.json
 REST_PORT="$(jq -r '.rest_port // 9999' "${OPTIONS_PATH}")"
 COMPANION_HOST="$(jq -r '.companion_host // "127.0.0.1"' "${OPTIONS_PATH}")"
