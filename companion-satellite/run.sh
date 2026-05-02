@@ -4,16 +4,21 @@ set -euo pipefail
 CONFIG_PATH=/data/satellite-config.json
 OPTIONS_PATH=/data/options.json
 APP_ENTRY=/app/satellite/dist/main.js
+IS_ROOT=false
 
 if [ "$(id -u)" = "0" ]; then
+    IS_ROOT=true
     if ! command -v gosu >/dev/null 2>&1; then
         echo "gosu not found; refusing to start as root." >&2
         exit 1
     fi
 
     mkdir -p /data
-    # Avoid following symlinks inside /data during ownership fix.
-    find /data -xdev -exec chown -h node:node {} +
+    NODE_UID="$(id -u node)"
+    DATA_UID="$(stat -c %u /data)"
+    if [ "${DATA_UID}" != "${NODE_UID}" ]; then
+        chown -R node:node /data
+    fi
 fi
 
 # Read options written by Home Assistant Supervisor into /data/options.json
@@ -44,7 +49,7 @@ UPDATED="$(jq \
 
 echo "${UPDATED}" > "${CONFIG_PATH}"
 
-if [ "$(id -u)" = "0" ]; then
+if ${IS_ROOT}; then
     chown node:node "${CONFIG_PATH}"
     exec gosu node node "${APP_ENTRY}" "${CONFIG_PATH}"
 fi
