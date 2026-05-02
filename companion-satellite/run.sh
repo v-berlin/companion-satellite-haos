@@ -10,11 +10,16 @@ if [ "$(id -u)" = "0" ] && [ -z "${PRIVILEGES_DROPPED:-}" ]; then
         exit 1
     fi
 
-    mkdir -p /data
-    if [ -L /data ] || [ ! -d /data ]; then
+    if [ -L /data ]; then
         echo "/data must be a directory, not a symlink." >&2
         exit 1
     fi
+    mkdir -p /data
+    if [ ! -d /data ]; then
+        echo "/data must be a directory." >&2
+        exit 1
+    fi
+    # Avoid following symlinks inside /data during ownership fix.
     chown -R --no-dereference node:node /data
     exec gosu node env PRIVILEGES_DROPPED=1 "$0" "$@"
 fi
