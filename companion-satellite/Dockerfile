@@ -105,4 +105,5 @@ LABEL \
     org.opencontainers.image.revision="${BUILD_REF}" \
     org.opencontainers.image.version="${BUILD_VERSION}"
 
+# Run as root so run.sh can fix /data permissions and then drop to node via gosu.
 ENTRYPOINT ["/run.sh"]

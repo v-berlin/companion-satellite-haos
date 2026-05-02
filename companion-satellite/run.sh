@@ -13,7 +13,6 @@ if [ "$(id -u)" = "0" ]; then
     mkdir -p /data
     # Avoid following symlinks inside /data during ownership fix.
     chown -R --no-dereference node:node /data
-    exec gosu node /run.sh "$@"
 fi
 
 # Read options written by Home Assistant Supervisor into /data/options.json
@@ -43,5 +42,10 @@ UPDATED="$(jq \
     "${CONFIG_PATH}")"
 
 echo "${UPDATED}" > "${CONFIG_PATH}"
+
+if [ "$(id -u)" = "0" ]; then
+    chown node:node "${CONFIG_PATH}"
+    exec gosu node node /app/satellite/dist/main.js "${CONFIG_PATH}"
+fi
 
 exec node /app/satellite/dist/main.js "${CONFIG_PATH}"
