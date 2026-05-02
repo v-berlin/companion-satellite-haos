@@ -4,10 +4,15 @@ set -euo pipefail
 CONFIG_PATH=/data/satellite-config.json
 OPTIONS_PATH=/data/options.json
 
-if [ "$(id -u)" = "0" ]; then
+if [ "$(id -u)" = "0" ] && [ -z "${RUN_AS_NODE:-}" ]; then
+    if ! command -v gosu >/dev/null 2>&1; then
+        echo "gosu not found; refusing to start as root." >&2
+        exit 1
+    fi
+
     mkdir -p /data
     chown -R node:node /data
-    exec gosu node "$0" "$@"
+    exec gosu node env RUN_AS_NODE=1 /run.sh "$@"
 fi
 
 # Read options written by Home Assistant Supervisor into /data/options.json
