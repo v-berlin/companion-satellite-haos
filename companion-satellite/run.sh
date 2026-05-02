@@ -11,17 +11,9 @@ if [ "$(id -u)" = "0" ]; then
     fi
 
     mkdir -p /data
-    if [ -L /data ] || [ ! -d /data ]; then
-        echo "/data must be a directory, not a symlink." >&2
-        exit 1
-    fi
-    SCRIPT_PATH="/run.sh"
-    if [ ! -x "${SCRIPT_PATH}" ]; then
-        SCRIPT_PATH="$0"
-    fi
     # Avoid following symlinks inside /data during ownership fix.
     chown -R --no-dereference node:node /data
-    exec gosu node "${SCRIPT_PATH}" "$@"
+    exec gosu node /run.sh "$@"
 fi
 
 # Read options written by Home Assistant Supervisor into /data/options.json
