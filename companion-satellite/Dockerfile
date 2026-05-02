@@ -1,4 +1,3 @@
-# syntax=docker/dockerfile:1
 # ---------------------------------------------------------------------------
 # Stage 1 – build
 # Clone upstream companion-satellite, install deps, build TypeScript, and
