@@ -30,7 +30,7 @@ RUN git clone --depth 1 --branch "${SATELLITE_REF}" \
 # Enable corepack so yarn 4 (defined in packageManager field) is available
 RUN corepack enable && corepack prepare
 
-RUN yarn config set networkTimeout 100000
+RUN yarn config set httpTimeout 100000
 RUN yarn install --immutable
 RUN yarn build
 # Reinstall production-only deps to slim down the output
