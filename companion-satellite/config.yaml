@@ -1,12 +1,11 @@
 name: "Companion Satellite"
-version: "1.0.0"
+version: "1.0.1"
 slug: "companion_satellite"
 description: "Satellite Streamdeck connector for Bitfocus Companion (connects over TCP 16622)"
 url: "https://github.com/v-berlin/companion-satellite-haos"
 arch:
   - amd64
   - aarch64
-image: "ghcr.io/v-berlin/companion-satellite-haos/{arch}-addon-companion-satellite"
 init: false
 startup: services
 boot: auto

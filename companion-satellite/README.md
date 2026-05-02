@@ -13,6 +13,7 @@ network.
    https://github.com/v-berlin/companion-satellite-haos
    ```
 3. Find **Companion Satellite** in the store and click **Install**.
+   - The first install builds the image locally and can take a few minutes.
 4. Configure the add-on options (see below) and click **Start**.
 
 ## Options
