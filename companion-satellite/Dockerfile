@@ -104,5 +104,4 @@ LABEL \
     org.opencontainers.image.revision="${BUILD_REF}" \
     org.opencontainers.image.version="${BUILD_VERSION}"
 
-USER node
 ENTRYPOINT ["/run.sh"]
